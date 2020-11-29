@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="计算每个人的总分csv源文件如下，计算客观分和主观分的总和，并添加在后面  处理完之后，应该有如下效果  12345678910111213141516171819202122232425scores&#x3D;[]fr&#x3D;open(&quot;成绩分析.csv&quot;,&quot;r&quot;)   ##打开文件，若该文件不与py文件处于同一位置，则需要加路径for line in fr:    li">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python与CSV文件的操作">
+<meta property="og:url" content="http://example.com/2020/11/29/Python%E4%B8%8ECSV%E6%96%87%E4%BB%B6%E7%9A%84%E6%93%8D%E4%BD%9C/index.html">
+<meta property="og:site_name" content="Hello">
+<meta property="og:description" content="计算每个人的总分csv源文件如下，计算客观分和主观分的总和，并添加在后面  处理完之后，应该有如下效果  12345678910111213141516171819202122232425scores&#x3D;[]fr&#x3D;open(&quot;成绩分析.csv&quot;,&quot;r&quot;)   ##打开文件，若该文件不与py文件处于同一位置，则需要加路径for line in fr:    li">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/2020/11/29/Python%E4%B8%8ECSV%E6%96%87%E4%BB%B6%E7%9A%84%E6%93%8D%E4%BD%9C/1.png">
+<meta property="og:image" content="http://example.com/2.png">
+<meta property="article:published_time" content="2020-11-29T02:58:08.000Z">
+<meta property="article:modified_time" content="2020-11-29T03:02:13.138Z">
+<meta property="article:author" content="Lucelia">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2020/11/29/Python%E4%B8%8ECSV%E6%96%87%E4%BB%B6%E7%9A%84%E6%93%8D%E4%BD%9C/1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2020/11/29/Python与CSV文件的操作/"/>
+
+
+
+
+
+  <title>Python与CSV文件的操作 | Hello</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hello</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/11/29/Python%E4%B8%8ECSV%E6%96%87%E4%BB%B6%E7%9A%84%E6%93%8D%E4%BD%9C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hello">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Python与CSV文件的操作</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-11-29T10:58:08+08:00">
+                2020-11-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="计算每个人的总分"><a href="#计算每个人的总分" class="headerlink" title="计算每个人的总分"></a>计算每个人的总分</h2><p>csv源文件如下，计算客观分和主观分的总和，并添加在后面</p>
+<p><img src="1.png" alt="分数处理前"></p>
+<p>处理完之后，应该有如下效果</p>
+<p><img src="/2.png" alt="分数处理后"></p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">scores=[]</span><br><span class="line">fr=<span class="built_in">open</span>(<span class="string">&quot;成绩分析.csv&quot;</span>,<span class="string">&quot;r&quot;</span>)   <span class="comment">##打开文件，若该文件不与py文件处于同一位置，则需要加路径</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> line <span class="keyword">in</span> fr:</span><br><span class="line">    line=line.replace(<span class="string">&quot;\n&quot;</span>,<span class="string">&quot;&quot;</span>) <span class="comment">##去掉换行符</span></span><br><span class="line">    person=line.split(<span class="string">&quot;,&quot;</span>)  <span class="comment">##变成列表</span></span><br><span class="line">    scores.append(person)  <span class="comment">##变成二维数组</span></span><br><span class="line">fr.close()</span><br><span class="line">isFirst=<span class="literal">True</span></span><br><span class="line"><span class="keyword">for</span> person <span class="keyword">in</span> scores:</span><br><span class="line">    <span class="keyword">if</span> isFirst:</span><br><span class="line">        person.append(<span class="string">&quot;sum&quot;</span>)  <span class="comment">##在第一行添加一个&quot;sum&quot;</span></span><br><span class="line">        isFirst=<span class="literal">False</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        s=<span class="number">0</span></span><br><span class="line">        <span class="keyword">for</span> mark <span class="keyword">in</span> person[<span class="number">3</span>:]:  <span class="comment">##读取成绩</span></span><br><span class="line">            s+=<span class="built_in">float</span>(mark)</span><br><span class="line">        person.append(<span class="string">&quot;&#123;:.2f&#125;&quot;</span>.<span class="built_in">format</span>(s)) <span class="comment">##添加成绩</span></span><br><span class="line">print(scores)</span><br><span class="line">fw=<span class="built_in">open</span>(<span class="string">&quot;result.csv&quot;</span>,<span class="string">&quot;w&quot;</span>)</span><br><span class="line"><span class="keyword">for</span> person <span class="keyword">in</span> scores:</span><br><span class="line">    <span class="keyword">for</span> e <span class="keyword">in</span> person:</span><br><span class="line">        print(e,<span class="string">&quot;,&quot;</span>,sep=<span class="string">&quot;&quot;</span>,end=<span class="string">&quot;&quot;</span>,file=fw)  <span class="comment">##写入每行的数据</span></span><br><span class="line">    print(file=fw)   <span class="comment">##换行</span></span><br><span class="line">fw.close()</span><br></pre></td></tr></table></figure>
+
+<h2 id="求总分，主观分和客观分的最高最低值，还有它们的均值"><a href="#求总分，主观分和客观分的最高最低值，还有它们的均值" class="headerlink" title="求总分，主观分和客观分的最高最低值，还有它们的均值"></a>求总分，主观分和客观分的最高最低值，还有它们的均值</h2><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br></pre></td><td class="code"><pre><span class="line">scores=[]</span><br><span class="line">fr=<span class="built_in">open</span>(<span class="string">&quot;result.csv&quot;</span>,<span class="string">&quot;r&quot;</span>)</span><br><span class="line"><span class="keyword">for</span> line <span class="keyword">in</span> fr:</span><br><span class="line">    line=line.replace(<span class="string">&quot;\n&quot;</span>,<span class="string">&quot;&quot;</span>)</span><br><span class="line">    person=line.split(<span class="string">&quot;,&quot;</span>)</span><br><span class="line">    scores.append(person)</span><br><span class="line">fr.close</span><br><span class="line"></span><br><span class="line"><span class="comment">##初始化</span></span><br><span class="line">sMax,sMin=-<span class="number">99</span>,<span class="number">999</span> </span><br><span class="line">sjMax,sjMin=-<span class="number">99</span>,<span class="number">999</span></span><br><span class="line">ojMax,ojMin=-<span class="number">99</span>,<span class="number">999</span></span><br><span class="line">sAvg,sjAvg,ojAvg=<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span></span><br><span class="line">sSum,sjSum,ojSum=<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="comment">##找出最大最小值</span></span><br><span class="line">count=<span class="number">0</span></span><br><span class="line">isFirst=<span class="literal">True</span></span><br><span class="line"><span class="keyword">for</span> person <span class="keyword">in</span> scores:</span><br><span class="line">    <span class="keyword">if</span> isFirst:</span><br><span class="line">        isFirst=<span class="literal">False</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        mark=<span class="built_in">float</span>(person[<span class="number">5</span>])</span><br><span class="line">        sSum+=mark</span><br><span class="line">        <span class="keyword">if</span> mark&gt;=sMax:</span><br><span class="line">            sMax=mark</span><br><span class="line">        <span class="keyword">if</span> mark&lt;=sMin:</span><br><span class="line">            sMin=mark</span><br><span class="line">            </span><br><span class="line">        mark=<span class="built_in">float</span>(person[<span class="number">4</span>])</span><br><span class="line">        sjSum+=mark</span><br><span class="line">        <span class="keyword">if</span> mark&gt;=sjMax:</span><br><span class="line">            sjMax=mark</span><br><span class="line">        <span class="keyword">if</span> mark&lt;=sjMin:</span><br><span class="line">            sjMin=mark</span><br><span class="line">            </span><br><span class="line">        mark=<span class="built_in">float</span>(person[<span class="number">3</span>])</span><br><span class="line">        ojSum+=mark</span><br><span class="line">        <span class="keyword">if</span> mark&gt;=ojMax:</span><br><span class="line">            ojMax=mark</span><br><span class="line">        <span class="keyword">if</span> mark&lt;=ojMin:</span><br><span class="line">            ojMin=mark</span><br><span class="line"></span><br><span class="line">SUM=[]</span><br><span class="line">sMax1=[]</span><br><span class="line">sMin1=[]</span><br><span class="line">sjMax1=[]</span><br><span class="line">sjMin1=[]</span><br><span class="line">ojMax1=[]</span><br><span class="line">ojMin1=[]</span><br><span class="line"></span><br><span class="line"><span class="comment">##将符合条件的人员添加到对应的列表中</span></span><br><span class="line">isFirst=<span class="literal">True</span></span><br><span class="line"><span class="keyword">for</span> person <span class="keyword">in</span> scores:</span><br><span class="line">    <span class="keyword">if</span> isFirst:</span><br><span class="line">        isFirst=<span class="literal">False</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        count+=<span class="number">1</span></span><br><span class="line">        print(person)</span><br><span class="line">        mark=<span class="built_in">float</span>(person[<span class="number">5</span>])</span><br><span class="line">        <span class="keyword">if</span> mark==sMax:</span><br><span class="line">            sMax1.append(person)</span><br><span class="line">            </span><br><span class="line">        <span class="keyword">if</span> mark==sMin:</span><br><span class="line">            sMin1.append(person)</span><br><span class="line">            </span><br><span class="line">        mark=<span class="built_in">float</span>(person[<span class="number">4</span>])</span><br><span class="line">        <span class="keyword">if</span> mark==sjMax:</span><br><span class="line">            sjMax1.append(person)</span><br><span class="line">            </span><br><span class="line">        <span class="keyword">if</span> mark==sjMin:</span><br><span class="line">            sjMin1.append(person)</span><br><span class="line">            </span><br><span class="line">        mark=<span class="built_in">float</span>(person[<span class="number">3</span>])</span><br><span class="line">        <span class="keyword">if</span> mark==ojMax:</span><br><span class="line">            ojMax1.append(person)</span><br><span class="line">            </span><br><span class="line">        <span class="keyword">if</span> mark==ojMin:</span><br><span class="line">            ojMin1.append(person)</span><br><span class="line"></span><br><span class="line"><span class="comment">##计算均值          </span></span><br><span class="line">sAvg=sSum/count</span><br><span class="line">sjAvg=sjSum/count</span><br><span class="line">ojAvg=ojSum/count</span><br><span class="line"></span><br><span class="line"><span class="comment">##将结果写入一个新的csv文件</span></span><br><span class="line">fw=<span class="built_in">open</span>(<span class="string">&quot;汇总.csv&quot;</span>,<span class="string">&quot;w&quot;</span>)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> sMax1:</span><br><span class="line">    print(<span class="string">&quot;总分最高&quot;</span>,<span class="string">&quot;,&quot;</span>,i[<span class="number">0</span>],<span class="string">&quot;,&quot;</span>,i[<span class="number">1</span>],<span class="string">&quot;,&quot;</span>,i[<span class="number">5</span>],file=fw)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> sMin1:</span><br><span class="line">    print(<span class="string">&quot;总分最低&quot;</span>,<span class="string">&quot;,&quot;</span>,i[<span class="number">0</span>],<span class="string">&quot;,&quot;</span>,i[<span class="number">1</span>],<span class="string">&quot;,&quot;</span>,i[<span class="number">5</span>],file=fw)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> sjMax1:</span><br><span class="line">    print(<span class="string">&quot;主观分最高&quot;</span>,<span class="string">&quot;,&quot;</span>,i[<span class="number">0</span>],<span class="string">&quot;,&quot;</span>,i[<span class="number">1</span>],<span class="string">&quot;,&quot;</span>,i[<span class="number">4</span>],file=fw)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> sjMin1:</span><br><span class="line">    print(<span class="string">&quot;主观分最低&quot;</span>,<span class="string">&quot;,&quot;</span>,i[<span class="number">0</span>],<span class="string">&quot;,&quot;</span>,i[<span class="number">1</span>],<span class="string">&quot;,&quot;</span>,i[<span class="number">4</span>],file=fw)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> ojMax1:</span><br><span class="line">    print(<span class="string">&quot;客观分最高&quot;</span>,<span class="string">&quot;,&quot;</span>,i[<span class="number">0</span>],<span class="string">&quot;,&quot;</span>,i[<span class="number">1</span>],<span class="string">&quot;,&quot;</span>,i[<span class="number">3</span>],file=fw)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> ojMin1:</span><br><span class="line">    print(<span class="string">&quot;客观分最低&quot;</span>,<span class="string">&quot;,&quot;</span>,i[<span class="number">0</span>],<span class="string">&quot;,&quot;</span>,i[<span class="number">1</span>],<span class="string">&quot;,&quot;</span>,i[<span class="number">3</span>],file=fw)</span><br><span class="line">print(<span class="string">&quot;总分分均值&quot;</span>,<span class="string">&quot;,&quot;</span>,<span class="string">&quot;&#123;:.2f&#125;&quot;</span>.<span class="built_in">format</span>(sAvg),file=fw)</span><br><span class="line">print(<span class="string">&quot;主观分均值&quot;</span>,<span class="string">&quot;,&quot;</span>,<span class="string">&quot;&#123;:.2f&#125;&quot;</span>.<span class="built_in">format</span>(sjAvg),file=fw)</span><br><span class="line">print(<span class="string">&quot;客观分均值&quot;</span>,<span class="string">&quot;,&quot;</span>,<span class="string">&quot;&#123;:.2f&#125;&quot;</span>.<span class="built_in">format</span>(ojAvg),file=fw)</span><br><span class="line">fw.close()</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/11/28/%E8%AE%A1%E7%AE%97%E6%96%87%E7%AB%A0%E4%B8%AD%E7%9A%84%E9%AB%98%E9%A2%91%E8%AF%8D%E5%87%BA%E7%8E%B0%E7%9A%84%E6%AC%A1%E6%95%B0/" rel="next" title="计算文章中的高频词出现的次数">
+                <i class="fa fa-chevron-left"></i> 计算文章中的高频词出现的次数
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/11/29/CSV%E6%96%87%E4%BB%B6%E8%BD%ACHTML%E6%96%87%E4%BB%B6/" rel="prev" title="CSV文件转HTML文件">
+                CSV文件转HTML文件 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E6%AF%8F%E4%B8%AA%E4%BA%BA%E7%9A%84%E6%80%BB%E5%88%86"><span class="nav-number">1.</span> <span class="nav-text">计算每个人的总分</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B1%82%E6%80%BB%E5%88%86%EF%BC%8C%E4%B8%BB%E8%A7%82%E5%88%86%E5%92%8C%E5%AE%A2%E8%A7%82%E5%88%86%E7%9A%84%E6%9C%80%E9%AB%98%E6%9C%80%E4%BD%8E%E5%80%BC%EF%BC%8C%E8%BF%98%E6%9C%89%E5%AE%83%E4%BB%AC%E7%9A%84%E5%9D%87%E5%80%BC"><span class="nav-number">2.</span> <span class="nav-text">求总分，主观分和客观分的最高最低值，还有它们的均值</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Lucelia</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
